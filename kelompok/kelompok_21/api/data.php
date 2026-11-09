@@ -98,5 +98,3 @@ if ($method === 'POST') {
 }
 $pdo->commit();
 respond([$pk => $id], 'Data berhasil disimpan.', $method === 'POST' ? 201 : 200);
-
-

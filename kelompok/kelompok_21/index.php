@@ -2,7 +2,7 @@
 require __DIR__ . '/includes/auth.php';
 requireLogin();
 $menus = ['beranda' => 'Beranda', 'kelas' => 'Data kelas', 'siswa' => 'Data siswa',
-    'mapel' => 'Mata pelajaran', 'periode' => 'Periode penilaian', 'penugasan' => 'Penugasan guru', 'klasifikasi' => 'Klasifikasi siswa', 'laporan' => 'Rekap & laporan', 'profil' => 'Profil saya'];
+    'mapel' => 'Mata pelajaran', 'periode' => 'Periode penilaian', 'penugasan' => 'Penugasan guru', 'profil' => 'Profil saya'];
 $page = $_GET['halaman'] ?? 'beranda';
 if (!isset($menus[$page])) { http_response_code(404); exit('Halaman tidak ditemukan.'); }
 ?>
@@ -14,14 +14,8 @@ if (!isset($menus[$page])) { http_response_code(404); exit('Halaman tidak ditemu
         <meta name="csrf-token" content="<?= e($_SESSION['csrf']) ?>">
         <title><?= e($menus[$page]) ?> • Arunika</title>
         <link rel="stylesheet" href="css/style.css">
-        <?php if ($page === 'klasifikasi'): ?>
-            <script src="js/klasifikasi.js" defer></script>
-        <?php elseif ($page === 'laporan'): ?>
-            <!-- Dikerjakan oleh: Jehan Reza Pahlevi (NPM. 2415061067) -->
-            <script src="js/kalkulasi.js" defer></script>
-        <?php else: ?>
-            <script src="js/app.js" defer></script>
-        <?php endif; ?>
+        <script src="js/app.js" defer>
+        </script>
     </head>
     <body data-page="<?= e($page) ?>" data-role="<?= e($_SESSION['guru']['peran']) ?>" data-guru="<?= e($_SESSION['guru']['id_guru']) ?>">
         <aside class="sidebar">
@@ -138,12 +132,6 @@ if (!isset($menus[$page])) { http_response_code(404); exit('Halaman tidak ditemu
                             <small>Data pada ringkasan mengikuti hak akses akun yang sedang masuk.</small>
                         </section>
                     </div>
-                <?php elseif ($page === 'klasifikasi'): ?>
-                <?php include __DIR__ . '/views/klasifikasi.php'; ?>
-                <?php elseif ($page === 'laporan'): ?>
-                <!-- Dikerjakan oleh: Jehan Reza Pahlevi (NPM. 2415061067) -->
-                <?php include __DIR__ . '/views/laporan.php'; ?>
-
                 <?php elseif ($page === 'profil'): ?>
                     <div class="page-heading">
                         <div>
