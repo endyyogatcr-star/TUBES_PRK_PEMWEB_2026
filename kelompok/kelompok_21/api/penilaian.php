@@ -125,7 +125,7 @@ if ($method === 'GET') {
     respond(null, 'Aksi tidak dikenal.', 404);
 }
 
-//Simpan Nilai
+//POST: simpan nilai satu kelas
 if ($method === 'POST' && $aksi === 'simpan_nilai') {
     $p = ambilPenilaian($pdo, $_GET['id_penilaian'] ?? 0);
     $input = inputData();
@@ -134,7 +134,7 @@ if ($method === 'POST' && $aksi === 'simpan_nilai') {
     $stmt->execute([$p['penugasan']['id_kelas']]);
     $siswaKelas = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 
-    // Validasi
+    // Validasi semua dulu sebelum menyimpan apa pun.
     $data = [];
     foreach ($input as $key => $value) {
         if (!preg_match('/^s_(\d+)$/', (string)$key, $m)) continue;
@@ -161,12 +161,13 @@ if ($method === 'POST' && $aksi === 'simpan_nilai') {
     respond(['tersimpan' => $tersimpan], 'Nilai berhasil disimpan.');
 }
 
-//CRUD Penilaian
+/* ---------------- POST / PUT / DELETE: CRUD penilaian ---------------- */
 if (!in_array($method, ['POST', 'PUT', 'DELETE'])) respond(null, 'Metode tidak didukung.', 405);
 
 if ($method === 'DELETE') {
     $p = ambilPenilaian($pdo, $_GET['id'] ?? 0);
     $pdo->beginTransaction();
+    // Nilai milik penilaian ini dihapus dulu karena relasi bersifat RESTRICT.
     $pdo->prepare('DELETE FROM NILAI_DAN_PENGUMPULAN WHERE id_penilaian = ?')->execute([$p['id_penilaian']]);
     $pdo->prepare('DELETE FROM PENILAIAN WHERE id_penilaian = ?')->execute([$p['id_penilaian']]);
     $pdo->commit();
